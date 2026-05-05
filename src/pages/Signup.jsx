@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 const Signup = () => {
     // declare our state here 
-    const [username, setUsername] = useState("")
+    const [user_name, setUser_name] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [phone, setPhone] = useState("")
@@ -15,6 +15,14 @@ const Signup = () => {
     const [success, setSuccess] = useState("")
     const [error, setError] = useState("")
 
+    // password strength checker 
+    const [strength, setStrength] = useState("")
+
+    // step 2 
+    // ==========================================================================
+    
+
+
     // function to handle submit 
     const handlesubmit = async (e) => {
         e.preventDefault()
@@ -22,11 +30,11 @@ const Signup = () => {
 
         //    create an empty digital envelope 
         const formdata = new FormData()
-        formdata.append("username", username)
+        formdata.append("user_name", user_name)
         formdata.append("email", email)
-        formdata.append("password", password)
         formdata.append("phone", phone)
-
+        formdata.append("password", password)
+        
         try {
             const response = await axios.post("http://asombakifaru.alwaysdata.net/api/signup", formdata)
             setSuccess(response.data.message)
@@ -50,7 +58,7 @@ const Signup = () => {
 
 
                 <form action="" onSubmit={handlesubmit}>
-                    <input type="text" placeholder='Enter username' className='form-control' onChange={(e) => setUsername(e.target.value)} /> <br />
+                    <input type="text" placeholder='Enter username' className='form-control' onChange={(e) => setUser_name(e.target.value)} /> <br />
 
                     < input type="email" placeholder=' Enter email' className='form-control' onChange={(e) => setEmail(e.target.value)} /> <br />
 

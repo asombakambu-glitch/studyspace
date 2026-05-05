@@ -1,23 +1,25 @@
-import Navbar from "../components/Navbar";
-import StatCard from "../components/StatCard";
+import React from 'react'
 
-export default function Dashboard() {
+const Dashboard = () => {
   return (
-    <div>
-      <Navbar />
+    <div className='row mt-2 justify-content-center'>
+      <div className='col-md-8 card shadow'>
 
-      <div className="dashboard">
-        <h2>Welcome back 👋</h2>
+        <h1>Dashboard</h1>
+        <h2>Welcome back</h2>
 
-        <div className="stats">
-          <StatCard title="Study Time" value="2h 30m" />
-          <StatCard title="Sessions" value="3" />
-          <StatCard title="Streak" value="5 days" />
-          <StatCard title="Best Subject" value="Biology" />
-        </div>
+        <p>Study Time: 2h 30m</p>
+        <p>Sessions: 3</p>
+        <p>Streak: 5 days</p>
+        <p>Best Subject: Biology</p>
 
-        <button className="start-btn">Start Session</button>
+        <button className='btn btn-outline-primary w-100'>
+          Start Session
+        </button>
+
       </div>
     </div>
-  );
+  )
 }
+
+export default Dashboard
