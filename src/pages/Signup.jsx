@@ -1,80 +1,208 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import { Link, useNavigate } from 'react-router-dom'
 
 const Signup = () => {
-    // declare our state here 
+
+    const navigate = useNavigate()
+
     const [user_name, setUser_name] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [phone, setPhone] = useState("")
 
-    // 3 states for posting data 
+    const [showPassword, setShowPassword] = useState(false)
+
     const [loading, setLoading] = useState("")
     const [success, setSuccess] = useState("")
     const [error, setError] = useState("")
 
-    // password strength checker 
     const [strength, setStrength] = useState("")
 
-    // step 2 
-    // ==========================================================================
-    
+    const checkStrength = (password) => {
 
+        if (password.length < 6) {
+            setStrength("Weak")
+        }
 
-    // function to handle submit 
+        else if (password.length < 10) {
+            setStrength("Medium")
+        }
+
+        else {
+            setStrength("Strong")
+        }
+
+    }
+
     const handlesubmit = async (e) => {
-        e.preventDefault()
-        setLoading("Please wait...")
 
-        //    create an empty digital envelope 
+        e.preventDefault()
+
+        setLoading("Please wait...")
+        setError("")
+        setSuccess("")
+
         const formdata = new FormData()
+
         formdata.append("user_name", user_name)
         formdata.append("email", email)
         formdata.append("phone", phone)
         formdata.append("password", password)
-        
+
         try {
-            const response = await axios.post("http://asombakifaru.alwaysdata.net/api/signup", formdata)
+
+            const response = await axios.post(
+                "http://asombakifaru.alwaysdata.net/api/signup",
+                formdata
+            )
+
             setSuccess(response.data.message)
+
+            localStorage.setItem("user", email)
+
+            navigate("/dashboard")
+
             setLoading("")
+
+            setUser_name("")
+            setEmail("")
+            setPassword("")
+            setPhone("")
+
         } catch (error) {
+
             setError(error.message)
+
             setLoading("")
         }
 
     }
-    // try catch means that if everything goes well we use ry, if anything goes wrong, use catch 
 
     return (
+
         <div className="row mt-2 justify-content-center">
-            <div className='col-md-6 card shadow p-4 mt-3 mb-3 text-shadow primary button' style={{ backgroundColor: "light coral" }}>
-                <h1>Sign up</h1>
-                {/* bind the states  */}
-                <h2 className="text-warning">{loading}</h2>
-                <h2 className="text-success">{success}</h2>
-                <h2 className="text-danger">{error}</h2>
 
+            <div className='col-md-6 card shadow p-4 mt-3 mb-3'>
 
-                <form action="" onSubmit={handlesubmit}>
-                    <input type="text" placeholder='Enter username' className='form-control' onChange={(e) => setUser_name(e.target.value)} /> <br />
+                <div className="text-center mb-4">
 
-                    < input type="email" placeholder=' Enter email' className='form-control' onChange={(e) => setEmail(e.target.value)} /> <br />
+                    <p className="soft-label">
+                        Join The Community
+                    </p>
 
-                    <input type="password" placeholder='Enter password' className='form-control' onChange={(e) => setPassword(e.target.value)} /> <br />
+                    <h1>
+                        Create Account
+                    </h1>
 
-                    <input type="number" placeholder='Enter phone' className='form-control ' onChange={(e) => setPhone(e.target.value)} /> <br /><br />
+                    <p className="muted-text">
+                        Start sharing notes, ideas and resources with students.
+                    </p>
 
-                    <button type='submit' className='btn btn-outline-dark w-100 hoover'>Sign up</button><br />
+                </div>
 
+                <h2 className="text-warning">
+                    {loading}
+                </h2>
 
-                    <p>Already have an account? <Link to="/signin">Sign in</Link>
+                <h2 className="text-success">
+                    {success}
+                </h2>
+
+                <h2 className="text-danger">
+                    {error}
+                </h2>
+
+                <form onSubmit={handlesubmit}>
+
+                    <input
+                        type="text"
+                        placeholder='Enter username'
+                        className='form-control'
+                        value={user_name}
+                        onChange={(e) => setUser_name(e.target.value)}
+                    />
+
+                    <br />
+
+                    <input
+                        type="email"
+                        placeholder='Enter email'
+                        className='form-control'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+
+                    <br />
+
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder='Enter password'
+                        className='form-control'
+                        value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value)
+                            checkStrength(e.target.value)
+                        }}
+                    />
+
+                    <div className="form-check mt-2 mb-3">
+
+                        <input
+                            type="checkbox"
+                            className="form-check-input"
+                            onChange={() => setShowPassword(!showPassword)}
+                        />
+
+                        <label className="form-check-label">
+                            Show Password
+                        </label>
+
+                    </div>
+
+                    <p className='mt-2'>
+                        Password strength:
+                        <strong> {strength}</strong>
+                    </p>
+
+                    <br />
+
+                    <input
+                        type="number"
+                        placeholder='Enter phone'
+                        className='form-control'
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                    />
+
+                    <br />
+
+                    <button
+                        type='submit'
+                        className='btn btn-primary-soft w-100'
+                    >
+                        Sign up
+                    </button>
+
+                    <br />
+                    <br />
+
+                    <p className="text-center">
+
+                        Already have an account?
+
+                        <Link to="/signin">
+                            {" "}Sign in
+                        </Link>
+
                     </p>
 
                 </form>
+
             </div>
+
         </div>
+
     )
 }
 

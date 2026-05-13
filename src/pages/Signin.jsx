@@ -1,64 +1,154 @@
 import axios from 'axios'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Signin = () => {
-  // declare our states here 
+
+  const navigate = useNavigate()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
 
-  // declare states for posting data 
   const [loading, setLoading] = useState("")
   const [success, setSuccess] = useState("")
   const [error, setError] = useState("")
 
-  // function to handle submit 
-  const handlesubmit = async (e) =>{
-  e.preventDefault()
-  setLoading("Please wait..")
+  const handlesubmit = async (e) => {
 
-  //empty digital envelope
-  const formdata = new FormData()
-  formdata.append("email", email)
-  formdata.append("password", password)
+    e.preventDefault()
 
-  try{
-    const response = await axios.post("http://asombakifaru.alwaysdata.net/api/signin",formdata)
-    setSuccess(response.data.message)
-    setLoading("")
-  } catch(error){
-      setError(error.message)
-        setLoading("")
+    setLoading("Please wait...")
+    setSuccess("")
+    setError("")
+
+    const formdata = new FormData()
+
+    formdata.append("email", email)
+    formdata.append("password", password)
+
+    try {
+
+      const response = await axios.post(
+        "http://asombakifaru.alwaysdata.net/api/signin",
+        formdata
+      )
+
+      localStorage.setItem("user", email)
+
+      setSuccess(response.data.message)
+
+      setLoading("")
+
+      navigate("/dashboard")
+
+    } catch (error) {
+
+      setError(error.response?.data?.message || error.message)
+
+      setLoading("")
+
+    }
+
   }
-  }
+
   return (
-    // mt means margin-top 
-    <div className='row mt-2 justify-content-center'>
-      <div className='col-md-6 card shadow'>
 
-        <h1>Sign in</h1><br />
+    <div className="row mt-2 justify-content-center">
 
-        {/* bind the states */}
-        <h2 className='text-warning'>{loading}</h2>
-        <h2 className='text-success'>{success}</h2>
-        <h2 className='text-danger'>{error}</h2>
+      <div className="col-md-6 card shadow p-4 mt-3 mb-3">
 
+        <div className="text-center mb-4">
 
-        <form action=""  onSubmit={handlesubmit}>
-          <input type="email" placeholder='Email' className='form-control' onChange={(e) => setEmail(e.target.value)} /><br />
+          <p className="soft-label">
+            Welcome Back
+          </p>
 
-                                                                                                                                                                                                                                                                                                                  
-          <input type="password" placeholder='Password' className='form-control' onChange={(e) => setPassword(e.target.value)} /> <br />
+          <h1>
+            Sign in
+          </h1>
 
-  
-          <input type="submit" value="Sign In" className='btn btn-outline- w-100' /> <br />
+          <p className="muted-text">
+            Access your StudySpace account and continue learning.
+          </p>
 
-          <p>Don't have an account? <Link to="/signup">Sign up</Link>  </p>
+        </div>
+
+        <h5 className="text-warning text-center">
+          {loading}
+        </h5>
+
+        <h5 className="text-success text-center">
+          {success}
+        </h5>
+
+        <h5 className="text-danger text-center">
+          {error}
+        </h5>
+
+        <form onSubmit={handlesubmit}>
+
+          <input
+            type="email"
+            placeholder="Email"
+            className="form-control"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <br />
+
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <div className="form-check mt-2 mb-3">
+
+            <input
+              type="checkbox"
+              className="form-check-input"
+              onChange={() => setShowPassword(!showPassword)}
+            />
+
+            <label className="form-check-label">
+              Show Password
+            </label>
+
+          </div>
+
+          <input
+            type="submit"
+            value="Sign In"
+            className="btn btn-primary-soft w-100"
+          />
+
+          <br />
+          <br />
+
+          <p className="text-center">
+
+            Don't have an account?
+
+            <Link to="/signup">
+              {" "}Sign up
+            </Link>
+
+          </p>
 
         </form>
+
       </div>
+
     </div>
+
   )
+
 }
 
 export default Signin
